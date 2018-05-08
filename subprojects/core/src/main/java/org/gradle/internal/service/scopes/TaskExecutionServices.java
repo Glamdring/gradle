@@ -68,6 +68,7 @@ import org.gradle.caching.internal.tasks.TaskCacheKeyCalculator;
 import org.gradle.caching.internal.tasks.TaskOutputCacheCommandFactory;
 import org.gradle.execution.taskgraph.TaskPlanExecutor;
 import org.gradle.execution.taskgraph.TaskPlanExecutorFactory;
+import org.gradle.initialization.BuildCancellationToken;
 import org.gradle.internal.classloader.ClassLoaderHierarchyHasher;
 import org.gradle.internal.cleanup.BuildOutputCleanupRegistry;
 import org.gradle.internal.concurrent.ExecutorFactory;
@@ -105,7 +106,8 @@ public class TaskExecutionServices {
                                     PathToFileResolver resolver,
                                     PropertyWalker propertyWalker,
                                     TaskExecutionGraph taskExecutionGraph,
-                                    BuildInvocationScopeId buildInvocationScopeId
+                                    BuildInvocationScopeId buildInvocationScopeId,
+                                    BuildCancellationToken buildCancellationToken
     ) {
 
         boolean buildCacheEnabled = buildCacheController.isEnabled();
@@ -117,7 +119,8 @@ public class TaskExecutionServices {
             listenerManager.getBroadcaster(TaskActionListener.class),
             buildOperationExecutor,
             asyncWorkTracker,
-            buildInvocationScopeId
+            buildInvocationScopeId,
+            buildCancellationToken
         );
         executer = new OutputDirectoryCreatingTaskExecuter(executer);
         if (buildCacheEnabled) {
